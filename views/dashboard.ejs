@@ -1,0 +1,364 @@
+```
+<%- include('partials/header') %>
+<div class="flex min-h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30">
+    <div class="p-4 border-b">
+      <h2 class="text-xl font-bold text-gray-800">Expense Tracker</h2>
+    </div>
+    <nav class="mt-4">
+      <ul>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 text-gray-700 hover:bg-blue-100 hover:text-blue-600" data-section="analytics-section">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 012-2h2a2 2 0 012 2v12a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            Analytics
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 text-gray-700 hover:bg-blue-100 hover:text-blue-600" data-section="add-expense-section">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Add Expense
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 text-gray-700 hover:bg-blue-100 hover:text-blue-600" data-section="expense-list-section">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            Expense List
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 text-gray-700 hover:bg-blue-100 hover:text-blue-600" data-section="set-budget-section">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M3 12h18"></path></svg>
+            Set Budget
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 ml-0 md:ml-64 p-4 sm:p-6 lg:p-8 transition-all duration-300">
+    <!-- Mobile Sidebar Toggle -->
+    <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
+
+    <!-- Error/No Data Message -->
+    <% if (expenseError || budgetError) { %>
+      <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-md" role="alert">
+        <p class="text-sm"><%= expenseError || budgetError %></p>
+      </div>
+    <% } else if (!expenses || expenses.length === 0) { %>
+      <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4 mb-6 rounded-lg shadow-md" role="alert">
+        <p class="text-sm">No expenses found. Add some expenses to get started!</p>
+      </div>
+    <% } %>
+
+    <!-- Welcome Message -->
+    <div class="mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">Welcome to Your Dashboard<% if (user && user.username) { %>, <%= user.username %><% } %></h2>
+      <p class="text-gray-600">Track, visualize, and manage your expenses with ease.</p>
+    </div>
+
+    <!-- Analytics Section (Default) -->
+    <div id="analytics-section" class="section">
+      <!-- Visualizations -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Monthly Spend Breakdown -->
+        <div class="bg-white shadow-lg rounded-xl p-6 transition-transform hover:scale-105">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Monthly Spend Breakdown</h3>
+          <% if (!monthlyData || JSON.parse(monthlyData).length === 0) { %>
+            <p class="text-gray-500 text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="monthlyChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Category-wise Spend -->
+        <div class="bg-white shadow-lg rounded-xl p-6 transition-transform hover:scale-105">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Category-wise Spend</h3>
+          <% if (!categoryData || JSON.parse(categoryData).length === 0) { %>
+            <p class="text-gray-500 text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Spending Trend -->
+        <div class="bg-white shadow-lg rounded-xl p-6 transition-transform hover:scale-105">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Spending Trend (Last 6 Months)</h3>
+          <% if (!trendData || JSON.parse(trendData).length === 0) { %>
+            <p class="text-gray-500 text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="trendChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Budget Form (Below Graphs) -->
+      <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Set Monthly Budget</h3>
+        <% if (budget) { %>
+          <p class="text-sm text-gray-600 mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
+          <% const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0); %>
+          <% if (totalExpenses > budget.amount) { %>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-lg" role="alert">
+              <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
+            </div>
+          <% } else { %>
+            <p class="text-sm text-gray-600 mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
+          <% } %>
+        <% } else { %>
+          <p class="text-sm text-gray-600 mb-4">Set a monthly budget to enable tracking.</p>
+        <% } %>
+        <form action="/expenses/set-budget" method="POST" class="space-y-4">
+          <div>
+            <label for="budgetAmount" class="block text-sm font-medium text-gray-700">Budget Amount ($)</label>
+            <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-200">Set Budget</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Expense Section -->
+    <div id="add-expense-section" class="section hidden">
+      <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Add New Expense</h3>
+        <form action="/expenses" method="POST" class="space-y-4">
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <input type="text" id="description" name="description" placeholder="e.g., Dinner at restaurant" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <div>
+            <label for="amount" class="block text-sm font-medium text-gray-700">Amount ($)</label>
+            <input type="number" id="amount" name="amount" placeholder="e.g., 25.50" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+            <select id="category" name="category" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-200">Add Expense</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Expense List Section -->
+    <div id="expense-list-section" class="section hidden">
+      <div class="bg-white shadow-lg rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Your Expenses</h3>
+        <% if (!expenses || expenses.length === 0) { %>
+          <p class="text-gray-500">No expenses yet.</p>
+        <% } else { %>
+          <div class="overflow-x-auto">
+            <table class="w-full table-auto">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="p-3 text-left text-sm font-medium text-gray-700">Description</th>
+                  <th class="p-3 text-left text-sm font-medium text-gray-700">Amount</th>
+                  <th class="p-3 text-left text-sm font-medium text-gray-700">Category</th>
+                  <th class="p-3 text-left text-sm font-medium text-gray-700">Date</th>
+                  <th class="p-3 text-left text-sm font-medium text-gray-700">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% expenses.forEach(expense => { %>
+                  <tr class="border-t hover:bg-gray-50 transition duration-200">
+                    <td class="p-3 font-medium text-gray-900"><%= expense.description %></td>
+                    <td class="p-3">$<%= expense.amount.toFixed(2) %></td>
+                    <td class="p-3"><%= expense.category %></td>
+                    <td class="p-3"><%= expense.date.toDateString() %></td>
+                    <td class="p-3">
+                      <form action="/expenses/delete/<%= expense._id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="text-red-600 hover:text-red-800 font-medium transition duration-200">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Set Budget Section -->
+    <div id="set-budget-section" class="section hidden">
+      <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Set Monthly Budget</h3>
+        <% if (budget) { %>
+          <p class="text-sm text-gray-600 mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
+          <% const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0); %>
+          <% if (totalExpenses > budget.amount) { %>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-lg" role="alert">
+              <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
+            </div>
+          <% } else { %>
+            <p class="text-sm text-gray-600 mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
+          <% } %>
+        <% } else { %>
+          <p class="text-sm text-gray-600 mb-4">Set a monthly budget to enable tracking.</p>
+        <% } %>
+        <form action="/expenses/set-budget" method="POST" class="space-y-4">
+          <div>
+            <label for="budgetAmount" class="block text-sm font-medium text-gray-700">Budget Amount ($)</label>
+            <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-200">Set Budget</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Sidebar and Section Navigation -->
+<script>
+  // Sidebar toggle for mobile
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+  });
+
+  // Section navigation
+  const sections = document.querySelectorAll('.section');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+  function showSection(sectionId) {
+    sections.forEach(section => {
+      section.classList.add('hidden');
+      if (section.id === sectionId) {
+        section.classList.remove('hidden');
+      }
+    });
+    sidebarLinks.forEach(link => {
+      link.classList.remove('bg-blue-100', 'text-blue-600');
+      if (link.getAttribute('data-section') === sectionId) {
+        link.classList.add('bg-blue-100', 'text-blue-600');
+      }
+    });
+
+    // Initialize charts only when Analytics section is active
+    if (sectionId === 'analytics-section') {
+      initializeCharts();
+    }
+  }
+
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute('data-section');
+      showSection(sectionId);
+      // Close sidebar on mobile after clicking
+      if (window.innerWidth < 768) {
+        sidebar.classList.add('-translate-x-full');
+      }
+    });
+  });
+
+  // Initialize default section (Analytics)
+  showSection('analytics-section');
+
+  // Chart.js initialization
+  function initializeCharts() {
+    try {
+      const monthlyData = JSON.parse('<%- monthlyData || "[]" %>');
+      const categoryData = JSON.parse('<%- categoryData || "[]" %>');
+      const trendData = JSON.parse('<%- trendData || "[]" %>');
+
+      if (monthlyData && monthlyData.length > 0) {
+        const monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyValues = Array(12).fill(0);
+        monthlyData.forEach(item => {
+          monthlyValues[item._id - 1] = item.total || 0;
+        });
+        new Chart(document.getElementById('monthlyChart'), {
+          type: 'bar',
+          data: {
+            labels: monthlyLabels,
+            datasets: [{
+              label: 'Monthly Spend ($)',
+              data: monthlyValues,
+              backgroundColor: 'rgba(54, 162, 235, 0.6)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+          },
+        });
+      }
+
+      if (categoryData && categoryData.length > 0) {
+        const categoryLabels = categoryData.map(item => item._id);
+        const categoryValues = categoryData.map(item => item.total || 0);
+        new Chart(document.getElementById('categoryChart'), {
+          type: 'pie',
+          data: {
+            labels: categoryLabels,
+            datasets: [{
+              data: categoryValues,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+              ],
+            }],
+          },
+          options: {
+            plugins: { legend: { position: 'bottom' } },
+            maintainAspectRatio: false,
+            responsive: true,
+          },
+        });
+      }
+
+      if (trendData && trendData.length > 0) {
+        const trendLabels = trendData.map(item => item._id);
+        const trendValues = trendData.map(item => item.total || 0);
+        new Chart(document.getElementById('trendChart'), {
+          type: 'line',
+          data: {
+            labels: trendLabels,
+            datasets: [{
+              label: 'Monthly Spend ($)',
+              data: trendValues,
+              fill: false,
+              borderColor: 'rgba(75, 192, 192, 1)',
+              tension: 0.1,
+            }],
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error rendering charts:', error.message);
+    }
+  }
+</script>
+</body>
+</html>
+```
