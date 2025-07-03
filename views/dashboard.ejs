@@ -1,5 +1,12 @@
-```
-<%- include('partials/header') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('partials/header') %>
 <div class="flex min-h-screen bg-gray-100">
   <!-- Sidebar -->
   <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30">
@@ -99,31 +106,6 @@
             </div>
           <% } %>
         </div>
-      </div>
-
-      <!-- Budget Form (Below Graphs) -->
-      <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Set Monthly Budget</h3>
-        <% if (budget) { %>
-          <p class="text-sm text-gray-600 mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
-          <% const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0); %>
-          <% if (totalExpenses > budget.amount) { %>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-lg" role="alert">
-              <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
-            </div>
-          <% } else { %>
-            <p class="text-sm text-gray-600 mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
-          <% } %>
-        <% } else { %>
-          <p class="text-sm text-gray-600 mb-4">Set a monthly budget to enable tracking.</p>
-        <% } %>
-        <form action="/expenses/set-budget" method="POST" class="space-y-4">
-          <div>
-            <label for="budgetAmount" class="block text-sm font-medium text-gray-700">Budget Amount ($)</label>
-            <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-          </div>
-          <button type="submit" class="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-200">Set Budget</button>
-        </form>
       </div>
     </div>
 
@@ -361,4 +343,3 @@
 </script>
 </body>
 </html>
-```
