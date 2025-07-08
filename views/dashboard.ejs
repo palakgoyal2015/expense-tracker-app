@@ -6,7 +6,6 @@
     <title>Expense Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -25,20 +24,20 @@
         }
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.1);
+            background-color: #ffffff; /* Ivory for cards */
+            box-shadow: 0 4px 6px rgba(30, 58, 138, 0.1); /* Subtle Midnight Blue shadow */
         }
         .card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(30, 58, 138, 0.1);
         }
         .btn-primary {
-            background-color: #1e3a8a;
+            background-color: #1e3a8a; /* Midnight Blue */
             color: #ffffff;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
         .btn-primary:hover {
-            background-color: #172554;
+            background-color: #172554; /* Darker Midnight Blue */
             transform: translateY(-2px);
         }
         .section {
@@ -59,465 +58,454 @@
             max-height: 200px;
         }
         .progress-bar {
-            background: #e0e0d7;
+            background: #e0e0d7; /* Slightly darker Ivory for contrast */
             border-radius: 9999px;
             overflow: hidden;
         }
         .progress-bar-fill {
-            background-color: #1e3a8a;
+            background-color: #1e3a8a; /* Midnight Blue for progress */
             transition: width 0.5s ease;
         }
     </style>
 </head>
 <body class="bg-gray-100">
     <%- include('partials/header') %>
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar fixed inset-y-0 left-0 w-64 text-white shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30">
+    <div class="p-6 border-b border-white/20">
+      <h2 class="text-2xl font-bold">Expense Tracker</h2>
+    </div>
+    <nav class="mt-4">
+      <ul>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="analytics-section">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 012-2h2a2 2 0 012 2v12a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            Analytics
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="add-expense-section">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Add Expense
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="expense-list-section">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            Expense List
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="set-budget-section">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M3 12h18"></path></svg>
+            Set Budget
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <div id="sidebar" class="sidebar fixed inset-y-0 left-0 w-64 text-white shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30">
-            <div class="p-6 border-b border-white/20">
-                <h2 class="text-2xl font-bold">Expense Tracker</h2>
-            </div>
-            <nav class="mt-4">
-                <ul>
-                    <li>
-                        <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="analytics-section">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 012-2h2a2 2 0 012 2v12a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                            Analytics
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="add-expense-section">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                            Add Expense
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="expense-list-section">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                            Expense List
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar-link flex items-center p-4 hover:bg-white/10 hover:text-white" data-section="set-budget-section">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M3 12h18"></path></svg>
-                            Set Budget
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+  <!-- Main Content -->
+  <div class="flex-1 ml-0 md:ml-64 p-4 sm:p-6 lg:p-8 transition-all duration-300">
+    <!-- Mobile Sidebar Toggle -->
+    <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 bg-1e3a8a text-white rounded-lg hover:bg-172554">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
 
-        <!-- Main Content -->
-        <div class="flex-1 ml-0 md:ml-64 p-4 sm:p-6 lg:p-8 transition-all duration-300">
-            <!-- Mobile Sidebar Toggle -->
-            <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 bg-1e3a8a text-white rounded-lg hover:bg-172554">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
+    <!-- Error/No Data Message -->
+    <% if (expenseError || budgetError) { %>
+      <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-6 rounded-lg shadow-sm" role="alert">
+        <p class="text-sm"><%= expenseError || budgetError %></p>
+      </div>
+    <% } else if (!expenses || expenses.length === 0) { %>
+      <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-6 rounded-lg shadow-sm" role="alert">
+        <p class="text-sm">No expenses found. Add some expenses to get started!</p>
+      </div>
+    <% } %>
 
-            <!-- Error/No Data Message -->
-            <% if (typeof expenseError !== 'undefined' || typeof budgetError !== 'undefined') { %>
-                <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-6 rounded-lg shadow-sm" role="alert">
-                    <p class="text-sm"><%= expenseError || budgetError || 'An error occurred.' %></p>
-                </div>
-            <% } else if (!expenses || expenses.length === 0) { %>
-                <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-6 rounded-lg shadow-sm" role="alert">
-                    <p class="text-sm">No expenses found. Add some expenses to get started!</p>
-                </div>
-            <% } %>
-
-            <!-- Welcome Message -->
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-1e3a8a">Welcome to Your Dashboard<% if (user && user.username) { %>, <%= user.username %><% } %></h2>
-                <p class="text-gray-600 mt-1">Track, visualize, and manage your expenses effortlessly.</p>
-            </div>
-
-            <!-- Analytics Section (Default) -->
-            <div id="analytics-section" class="section">
-                <!-- Expense Summary Card -->
-                <div class="bg-white shadow-lg rounded-xl p-6 mb-6 card">
-                    <h3 class="text-lg font-semibold text-1e3a8a mb-4">Expense Summary</h3>
-                    <% 
-                        const totalExpenses = expenses && Array.isArray(expenses) ? expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0) : 0;
-                        const budgetAmount = budget && budget.amount ? budget.amount : 0;
-                        const remainingBudget = budgetAmount - totalExpenses;
-                        const progress = budgetAmount > 0 ? (totalExpenses / budgetAmount) * 100 : 0;
-                    %>
-                    <div class="space-y-4">
-                        <div class="flex justify-between">
-                            <span class="text-sm font-medium text-1e3a8a">Total Expenses</span>
-                            <span class="text-sm font-semibold text-1e3a8a">$<%= totalExpenses.toFixed(2) %></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm font-medium text-1e3a8a">Budget</span>
-                            <span class="text-sm font-semibold text-1e3a8a">$<%= budgetAmount.toFixed(2) %></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm font-medium text-1e3a8a">Remaining</span>
-                            <span class="text-sm font-semibold <%= remainingBudget < 0 ? 'text-red-600' : 'text-1e3a8a' %>">$<%= Math.abs(remainingBudget).toFixed(2) %> <%= remainingBudget < 0 ? '(Over)' : '' %></span>
-                        </div>
-                        <div class="progress-bar h-2">
-                            <div class="progress-bar-fill h-full" style="width: <%= Math.min(progress, 100) %>%;"></div>
-                        </div>
-                        <button onclick="showSection('add-expense-section')" class="w-full btn-primary p-3 rounded-lg">Quick Add Expense</button>
-                    </div>
-                </div>
-
-                <!-- Visualizations -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <!-- Monthly Spend Breakdown -->
-                    <div class="bg-white shadow-lg rounded-xl p-6 card">
-                        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Monthly Spend Breakdown</h3>
-                        <% if (!monthlyData || JSON.parse(monthlyData || '[]').length === 0) { %>
-                            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
-                        <% } else { %>
-                            <div class="relative" style="height: 200px;">
-                                <canvas id="monthlyChart"></canvas>
-                            </div>
-                        <% } %>
-                    </div>
-
-                    <!-- Category-wise Spend -->
-                    <div class="bg-white shadow-lg rounded-xl p-6 card">
-                        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Category-wise Spend</h3>
-                        <% if (!categoryData || JSON.parse(categoryData || '[]').length === 0) { %>
-                            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
-                        <% } else { %>
-                            <div class="relative" style="height: 200px;">
-                                <canvas id="categoryChart"></canvas>
-                            </div>
-                        <% } %>
-                    </div>
-
-                    <!-- Spending Trend -->
-                    <div class="bg-white shadow-lg rounded-xl p-6 card">
-                        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Spending Trend (Last 6 Months)</h3>
-                        <% if (!trendData || JSON.parse(trendData || '[]').length === 0) { %>
-                            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
-                        <% } else { %>
-                            <div class="relative" style="height: 200px;">
-                                <canvas id="trendChart"></canvas>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add Expense Section -->
-            <div id="add-expense-section" class="section hidden">
-                <div class="flex justify-center">
-                    <div class="bg-white shadow-lg rounded-xl p-6 max-w-4xl mx-auto w-full" card>
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-1e3a8a">Add New Expense</h3>
-                            <button id="voiceInputBtn" class="p-1.5 bg-1e3a8a text-white rounded-full hover:bg-172554 transition duration-200" title="Voice Input">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                            </button>
-                        </div>
-                        <form action="/expenses" method="POST" class="space-y-5">
-                            <div>
-                                <label for="description" class="block text-sm font-medium text-1e3a8a">Description</label>
-                                <input type="text" id="description" name="description" placeholder="e.g., Dinner at restaurant" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
-                            </div>
-                            <div>
-                                <label for="amount" class="block text-sm font-medium text-1e3a8a">Amount ($)</label>
-                                <input type="number" id="amount" name="amount" placeholder="e.g., 25.50" step="0.01" min="0" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
-                            </div>
-                            <div>
-                                <label for="category" class="block text-sm font-medium text-1e3a8a">Category</label>
-                                <select id="category" name="category" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
-                                    <option value="Food">Food</option>
-                                    <option value="Transport">Transport</option>
-                                    <option value="Entertainment">Entertainment</option>
-                                    <option value="Utilities">Utilities</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <button type="submit" class="w-full btn-primary p-3 rounded-lg">Add Expense</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Expense List Section -->
-            <div id="expense-list-section" class="section hidden">
-                <div class="flex justify-center">
-                    <div class="bg-white shadow-lg rounded-xl p-6 max-w-6xl mx-auto w-full" card>
-                        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Your Expenses</h3>
-                        <% if (!expenses || expenses.length === 0) { %>
-                            <p class="text-1e3a8a">No expenses yet.</p>
-                        <% } else { %>
-                            <div class="overflow-x-auto">
-                                <table class="w-full table-auto">
-                                    <thead>
-                                        <tr class="bg-f5f5f0">
-                                            <th class="p-3 text-left text-sm font-medium text-1e3a8a">Description</th>
-                                            <th class="p-3 text-left text-sm font-medium text-1e3a8a">Amount</th>
-                                            <th class="p-3 text-left text-sm font-medium text-1e3a8a">Category</th>
-                                            <th class="p-3 text-left text-sm font-medium text-1e3a8a">Date</th>
-                                            <th class="p-3 text-left text-sm font-medium text-1e3a8a">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% expenses.forEach(expense => { %>
-                                            <tr class="border-t hover:bg-f5f5f0 transition duration-200">
-                                                <td class="p-3 font-medium text-1e3a8a"><%= expense.description || 'N/A' %></td>
-                                                <td class="p-3">$<%= (expense.amount || 0).toFixed(2) %></td>
-                                                <td class="p-3"><%= expense.category || 'N/A' %></td>
-                                                <td class="p-3"><%= expense.date ? new Date(expense.date).toDateString() : 'N/A' %></td>
-                                                <td class="p-3">
-                                                    <form action="/expenses/delete/<%= expense._id || '' %>" method="POST" style="display:inline;">
-                                                        <button type="submit" class="text-1e3a8a hover:text-172554 font-medium transition duration-200">Delete</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        <% }) %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Set Budget Section -->
-            <div id="set-budget-section" class="section hidden">
-                <div class="flex justify-center">
-                    <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto w-full card">
-                        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Set Monthly Budget</h3>
-                        <% if (budget && budget.amount) { %>
-                            <p class="text-sm text-1e3a8a mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
-                            <% const totalExpenses = expenses && Array.isArray(expenses) ? expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0) : 0; %>
-                            <% if (totalExpenses > budget.amount) { %>
-                                <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-4 rounded-lg shadow-sm" role="alert">
-                                    <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
-                                </div>
-                            <% } else { %>
-                                <p class="text-sm text-1e3a8a mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
-                            <% } %>
-                        <% } else { %>
-                            <p class="text-sm text-1e3a8a mb-4">Set a monthly budget to enable tracking.</p>
-                        <% } %>
-                        <form action="/expenses/set-budget" method="POST" class="space-y-5">
-                            <div>
-                                <label for="budgetAmount" class="block text-sm font-medium text-1e3a8a">Budget Amount ($)</label>
-                                <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" min="0" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
-                            </div>
-                            <button type="submit" class="w-full btn-primary p-3 rounded-lg">Set Budget</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Welcome Message -->
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-1e3a8a">Welcome to Your Dashboard<% if (user && user.username) { %>, <%= user.username %><% } %></h2>
+      <p class="text-gray-600 mt-1">Track, visualize, and manage your expenses effortlessly.</p>
     </div>
 
-    <!-- JavaScript for Sidebar, Section Navigation, Voice Input, and Charts -->
-    <script>
-        // Sidebar toggle for mobile
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
+    <!-- Analytics Section (Default) -->
+    <div id="analytics-section" class="section">
+      <!-- Expense Summary Card -->
+      <div class="bg-white shadow-lg rounded-xl p-6 mb-6 card">
+        <h3 class="text-lg font-semibold text-1e3a8a mb-4">Expense Summary</h3>
+        <% const totalExpenses = expenses ? expenses.reduce((sum, exp) => sum + exp.amount, 0) : 0; %>
+        <% const budgetAmount = budget ? budget.amount : 0; %>
+        <% const remainingBudget = budgetAmount - totalExpenses; %>
+        <% const progress = budgetAmount > 0 ? (totalExpenses / budgetAmount) * 100 : 0; %>
+        <div class="space-y-4">
+          <div class="flex justify-between">
+            <span class="text-sm font-medium text-1e3a8a">Total Expenses</span>
+            <span class="text-sm font-semibold text-1e3a8a">$<%= totalExpenses.toFixed(2) %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-sm font-medium text-1e3a8a">Budget</span>
+            <span class="text-sm font-semibold text-1e3a8a">$<%= budgetAmount.toFixed(2) %></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-sm font-medium text-1e3a8a">Remaining</span>
+            <span class="text-sm font-semibold <%= remainingBudget < 0 ? 'text-1e3a8a' : 'text-1e3a8a' %>">$<%= Math.abs(remainingBudget).toFixed(2) %> <%= remainingBudget < 0 ? '(Over)' : '' %></span>
+          </div>
+          <div class="progress-bar h-2">
+            <div class="progress-bar-fill h-full" style="width: <%= Math.min(progress, 100) %>%; background-color: #1e3a8a;"></div>
+          </div>
+          <button onclick="showSection('add-expense-section')" class="w-full btn-primary p-3 rounded-lg">Quick Add Expense</button>
+        </div>
+      </div>
+
+      <!-- Visualizations -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Monthly Spend Breakdown -->
+        <div class="bg-white shadow-lg rounded-xl p-6 card">
+          <h3 class="text-lg font-semibold text-1e3a8a mb-4">Monthly Spend Breakdown</h3>
+          <% if (!monthlyData || JSON.parse(monthlyData).length === 0) { %>
+            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="monthlyChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Category-wise Spend -->
+        <div class="bg-white shadow-lg rounded-xl p-6 card">
+          <h3 class="text-lg font-semibold text-1e3a8a mb-4">Category-wise Spend</h3>
+          <% if (!categoryData || JSON.parse(categoryData).length === 0) { %>
+            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Spending Trend -->
+        <div class="bg-white shadow-lg rounded-xl p-6 card">
+          <h3 class="text-lg font-semibold text-1e3a8a mb-4">Spending Trend (Last 6 Months)</h3>
+          <% if (!trendData || JSON.parse(trendData).length === 0) { %>
+            <p class="text-1e3a8a text-sm">No data available. Add expenses to see the chart.</p>
+          <% } else { %>
+            <div class="relative" style="height: 200px;">
+              <canvas id="trendChart"></canvas>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Expense Section -->
+    <div id="add-expense-section" class="section hidden">
+      <div class="flex justify-center">
+        <div class="bg-white shadow-lg rounded-xl p-6 max-w-4xl mx-auto" style="width: 1152px;" card>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-1e3a8a">Add New Expense</h3>
+            <button id="voiceInputBtn" class="p-1.5 bg-1e3a8a text-white rounded-full hover:bg-172554 transition duration-200" title="Voice Input">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            </button>
+          </div>
+          <form action="/expenses" method="POST" class="space-y-5">
+            <div>
+              <label for="description" class="block text-sm font-medium text-1e3a8a">Description</label>
+              <input type="text" id="description" name="description" placeholder="e.g., Dinner at restaurant" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+            </div>
+            <div>
+              <label for="amount" class="block text-sm font-medium text-1e3a8a">Amount ($)</label>
+              <input type="number" id="amount" name="amount" placeholder="e.g., 25.50" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+            </div>
+            <div>
+              <label for="category" class="block text-sm font-medium text-1e3a8a">Category</label>
+              <select id="category" name="category" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit" class="w-full btn-primary p-3 rounded-lg">Add Expense</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expense List Section -->
+    <div id="expense-list-section" class="section hidden">
+      <div class="flex justify-center">
+        <div class="bg-white shadow-lg rounded-xl p-6 max-w-6xl mx-auto" style="width: 100%; max-width: 1536px;" card>
+          <h3 class="text-lg font-semibold text-1e3a8a mb-4">Your Expenses</h3>
+          <% if (!expenses || expenses.length === 0) { %>
+            <p class="text-1e3a8a">No expenses yet.</p>
+          <% } else { %>
+            <div class="overflow-x-auto">
+              <table class="w-full table-auto">
+                <thead>
+                  <tr class="bg-f5f5f0">
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Description</th>
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Amount</th>
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Category</th>
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Date</th>
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% expenses.forEach(expense => { %>
+                    <tr class="border-t hover:bg-f5f5f0 transition duration-200">
+                      <td class="p-3 font-medium text-1e3a8a"><%= expense.description %></td>
+                      <td class="p-3">$<%= expense.amount.toFixed(2) %></td>
+                      <td class="p-3"><%= expense.category %></td>
+                      <td class="p-3"><%= expense.date.toDateString() %></td>
+                      <td class="p-3">
+                        <form action="/expenses/delete/<%= expense._id %>" method="POST" style="display:inline;">
+                          <button type="submit" class="text-1e3a8a hover:text-172554 font-medium transition duration-200">Delete</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Set Budget Section -->
+    <div id="set-budget-section" class="section hidden">
+      <div class="flex justify-center">
+        <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto card">
+          <h3 class="text-lg font-semibold text-1e3a8a mb-4">Set Monthly Budget</h3>
+          <% if (budget) { %>
+            <p class="text-sm text-1e3a8a mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
+            <% const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0); %>
+            <% if (totalExpenses > budget.amount) { %>
+              <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-4 rounded-lg shadow-sm" role="alert">
+                <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
+              </div>
+            <% } else { %>
+              <p class="text-sm text-1e3a8a mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
+            <% } %>
+          <% } else { %>
+            <p class="text-sm text-1e3a8a mb-4">Set a monthly budget to enable tracking.</p>
+          <% } %>
+          <form action="/expenses/set-budget" method="POST" class="space-y-5">
+            <div>
+              <label for="budgetAmount" class="block text-sm font-medium text-1e3a8a">Budget Amount ($)</label>
+              <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+            </div>
+            <button type="submit" class="w-full btn-primary p-3 rounded-lg">Set Budget</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Sidebar, Section Navigation, Voice Input, and Summary -->
+<script>
+  // Sidebar toggle for mobile
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+  });
+
+  // Section navigation
+  const sections = document.querySelectorAll('.section');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+  function showSection(sectionId) {
+    sections.forEach(section => {
+      section.classList.add('hidden');
+      if (section.id === sectionId) {
+        section.classList.remove('hidden');
+      }
+    });
+    sidebarLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('data-section') === sectionId) {
+        link.classList.add('active');
+      }
+    });
+
+    // Initialize charts only when Analytics section is active
+    if (sectionId === 'analytics-section') {
+      initializeCharts();
+    }
+  }
+
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sectionId = link.getAttribute('data-section');
+      showSection(sectionId);
+      // Close sidebar on mobile after clicking
+      if (window.innerWidth < 768) {
+        sidebar.classList.add('-translate-x-full');
+      }
+    });
+  });
+
+  // Initialize default section (Analytics)
+  showSection('analytics-section');
+
+  // Chart.js initialization
+  function initializeCharts() {
+    try {
+      const monthlyData = JSON.parse('<%- monthlyData || "[]" %>');
+      const categoryData = JSON.parse('<%- categoryData || "[]" %>');
+      const trendData = JSON.parse('<%- trendData || "[]" %>');
+
+      if (monthlyData && monthlyData.length > 0) {
+        const monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyValues = Array(12).fill(0);
+        monthlyData.forEach(item => {
+          monthlyValues[item._id - 1] = item.total || 0;
         });
+        new Chart(document.getElementById('monthlyChart'), {
+          type: 'bar',
+          data: {
+            labels: monthlyLabels,
+            datasets: [{
+              label: 'Monthly Spend ($)',
+              data: monthlyValues,
+              backgroundColor: 'rgba(30, 58, 138, 0.6)', /* Midnight Blue with opacity */
+              borderColor: '#1e3a8a', /* Midnight Blue */
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } },
+          },
+        });
+      }
 
-        // Section navigation
-        const sections = document.querySelectorAll('.section');
-        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+      if (categoryData && categoryData.length > 0) {
+        const categoryLabels = categoryData.map(item => item._id);
+        const categoryValues = categoryData.map(item => item.total || 0);
+        new Chart(document.getElementById('categoryChart'), {
+          type: 'pie',
+          data: {
+            labels: categoryLabels,
+            datasets: [{
+              data: categoryValues,
+              backgroundColor: [
+                'rgba(30, 58, 138, 0.6)', /* Midnight Blue */
+                'rgba(30, 58, 138, 0.4)', /* Lighter Midnight Blue */
+              ],
+            }],
+          },
+          options: {
+            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } },
+            maintainAspectRatio: false,
+            responsive: true,
+          },
+        });
+      }
 
-        function showSection(sectionId) {
-            sections.forEach(section => {
-                section.classList.add('hidden');
-                if (section.id === sectionId) {
-                    section.classList.remove('hidden');
-                }
-            });
-            sidebarLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-section') === sectionId) {
-                    link.classList.add('active');
-                }
-            });
+      if (trendData && trendData.length > 0) {
+        const trendLabels = trendData.map(item => item._id);
+        const trendValues = trendData.map(item => item.total || 0);
+        new Chart(document.getElementById('trendChart'), {
+          type: 'line',
+          data: {
+            labels: trendLabels,
+            datasets: [{
+              label: 'Monthly Spend ($)',
+              data: trendValues,
+              fill: false,
+              borderColor: '#1e3a8a', /* Midnight Blue */
+              tension: 0.1,
+            }],
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } },
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error rendering charts:', error.message);
+    }
+  }
 
-            // Initialize charts only when Analytics section is active
-            if (sectionId === 'analytics-section') {
-                initializeCharts();
-            }
+  // Voice Input Functionality
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    document.getElementById('voiceInputBtn').addEventListener('click', () => {
+      recognition.start();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+
+        // Extract amount
+        const amountMatch = transcript.match(/\d+(\.\d+)?|\b(fifty|sixty|seventy|eighty|ninety|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty)\b/);
+        let amount = null;
+        if (amountMatch) {
+          amount = amountMatch[0];
+          const wordToNumber = {
+            'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
+            'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15, 'sixteen': 16,
+            'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
+            'sixty': 60, 'seventy': 70, 'eighty': 80, 'ninety': 90
+          };
+          if (wordToNumber[amount]) {
+            amount = wordToNumber[amount];
+          }
+          document.getElementById('amount').value = parseFloat(amount).toFixed(2);
         }
 
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const sectionId = link.getAttribute('data-section');
-                showSection(sectionId);
-                // Close sidebar on mobile after clicking
-                if (window.innerWidth < 768) {
-                    sidebar.classList.add('-translate-x-full');
-                }
-            });
-        });
-
-        // Initialize default section (Analytics)
-        document.addEventListener('DOMContentLoaded', () => {
-            showSection('analytics-section');
-        });
-
-        // Chart.js initialization
-        function initializeCharts() {
-            try {
-                // Monthly Chart
-                const monthlyData = JSON.parse('<%- monthlyData || "[]" %>') || [];
-                if (monthlyData.length > 0) {
-                    const monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    const monthlyValues = Array(12).fill(0);
-                    monthlyData.forEach(item => {
-                        if (item._id && item.total) {
-                            monthlyValues[item._id - 1] = item.total;
-                        }
-                    });
-                    new Chart(document.getElementById('monthlyChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: monthlyLabels,
-                            datasets: [{
-                                label: 'Monthly Spend ($)',
-                                data: monthlyValues,
-                                backgroundColor: 'rgba(30, 58, 138, 0.6)',
-                                borderColor: '#1e3a8a',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: { y: { beginAtZero: true } },
-                            maintainAspectRatio: false,
-                            responsive: true,
-                            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } }
-                        }
-                    });
-                }
-
-                // Category Chart
-                const categoryData = JSON.parse('<%- categoryData || "[]" %>') || [];
-                if (categoryData.length > 0) {
-                    const categoryLabels = categoryData.map(item => item._id || 'Unknown');
-                    const categoryValues = categoryData.map(item => item.total || 0);
-                    new Chart(document.getElementById('categoryChart'), {
-                        type: 'pie',
-                        data: {
-                            labels: categoryLabels,
-                            datasets: [{
-                                data: categoryValues,
-                                backgroundColor: [
-                                    'rgba(30, 58, 138, 0.6)',
-                                    'rgba(30, 58, 138, 0.4)',
-                                    'rgba(30, 58, 138, 0.8)',
-                                    'rgba(30, 58, 138, 0.3)',
-                                    'rgba(30, 58, 138, 0.5)'
-                                ]
-                            }]
-                        },
-                        options: {
-                            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } },
-                            maintainAspectRatio: false,
-                            responsive: true
-                        }
-                    });
-                }
-
-                // Trend Chart
-                const trendData = JSON.parse('<%- trendData || "[]" %>') || [];
-                if (trendData.length > 0) {
-                    const trendLabels = trendData.map(item => item._id || 'Unknown');
-                    const trendValues = trendData.map(item => item.total || 0);
-                    new Chart(document.getElementById('trendChart'), {
-                        type: 'line',
-                        data: {
-                            labels: trendLabels,
-                            datasets: [{
-                                label: 'Monthly Spend ($)',
-                                data: trendValues,
-                                fill: false,
-                                borderColor: '#1e3a8a',
-                                tension: 0.1
-                            }]
-                        },
-                        options: {
-                            scales: { y: { beginAtZero: true } },
-                            maintainAspectRatio: false,
-                            responsive: true,
-                            plugins: { legend: { position: 'bottom', labels: { color: '#1e3a8a' } } }
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error rendering charts:', error.message);
-            }
+        // Extract category
+        const categories = ['food', 'transport', 'entertainment', 'utilities', 'other'];
+        const category = categories.find(cat => transcript.toLowerCase().includes(cat));
+        if (category) {
+          document.getElementById('category').value = category.charAt(0).toUpperCase() + category.slice(1);
         }
 
-        // Voice Input Functionality
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-
-            document.getElementById('voiceInputBtn').addEventListener('click', () => {
-                recognition.start();
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript.trim().toLowerCase();
-
-                    // Extract amount
-                    const amountMatch = transcript.match(/\d+(\.\d+)?|\b(fifty|sixty|seventy|eighty|ninety|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty)\b/);
-                    let amount = null;
-                    if (amountMatch) {
-                        amount = amountMatch[0];
-                        const wordToNumber = {
-                            'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
-                            'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15, 'sixteen': 16,
-                            'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
-                            'sixty': 60, 'seventy': 70, 'eighty': 80, 'ninety': 90
-                        };
-                        if (wordToNumber[amount]) {
-                            amount = wordToNumber[amount];
-                        }
-                        document.getElementById('amount').value = parseFloat(amount).toFixed(2);
-                    }
-
-                    // Extract category
-                    const categories = ['food', 'transport', 'entertainment', 'utilities', 'other'];
-                    const category = categories.find(cat => transcript.includes(cat));
-                    if (category) {
-                        document.getElementById('category').value = category.charAt(0).toUpperCase() + category.slice(1);
-                    }
-
-                    // Extract description
-                    let description = transcript;
-                    if (amountMatch) {
-                        description = description.replace(amountMatch[0], '').trim();
-                    }
-                    if (category) {
-                        description = description.replace(category, '').trim();
-                    }
-                    description = description.replace(/\s+/g, ' ').trim();
-                    document.getElementById('description').value = description || 'Expense from voice input';
-
-                    // Alert if amount or category is missing
-                    if (!amountMatch) {
-                        alert('Could not detect a valid amount. Please include a number in your sentence.');
-                    }
-                    if (!category) {
-                        alert('Could not detect a valid category. Please include one of: food, transport, entertainment, utilities, other.');
-                    }
-                };
-
-                recognition.onerror = (event) => {
-                    alert('Voice recognition error: ' + event.error);
-                };
-            });
-        } else {
-            document.getElementById('voiceInputBtn').style.display = 'none';
+        // Extract description
+        let description = transcript;
+        if (amountMatch) {
+          description = description.replace(amountMatch[0], '').trim();
         }
-    </script>
+        if (category) {
+          description = description.replace(new RegExp(category, 'i'), '').trim();
+        }
+        description = description.replace(/\s+/g, ' ').trim();
+        document.getElementById('description').value = description || 'Expense from voice input';
+
+        // Alert if amount or category is missing
+        if (!amountMatch) {
+          alert('Could not detect a valid amount. Please include a number in your sentence.');
+        }
+        if (!category) {
+          alert('Could not detect a valid category. Please include one of: food, transport, entertainment, utilities, other.');
+        }
+      };
+
+      recognition.onerror = (event) => {
+        alert('Voice recognition error: ' + event.error);
+      };
+    });
+  } else {
+    alert('Speech Recognition API is not supported in this browser.');
+    document.getElementById('voiceInputBtn').style.display = 'none';
+  }
+</script>
 </body>
 </html>
