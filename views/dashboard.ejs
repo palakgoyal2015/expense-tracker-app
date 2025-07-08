@@ -142,15 +142,15 @@
         <div class="space-y-4">
           <div class="flex justify-between">
             <span class="text-sm font-medium text-1e3a8a">Total Expenses</span>
-            <span class="text-sm font-semibold text-1e3a8a">$<%= totalExpenses.toFixed(2) %></span>
+            <span class="text-sm font-semibold text-1e3a8a">₹<%= totalExpenses.toFixed(2) %></span>
           </div>
           <div class="flex justify-between">
             <span class="text-sm font-medium text-1e3a8a">Budget</span>
-            <span class="text-sm font-semibold text-1e3a8a">$<%= budgetAmount.toFixed(2) %></span>
+            <span class="text-sm font-semibold text-1e3a8a">₹<%= budgetAmount.toFixed(2) %></span>
           </div>
           <div class="flex justify-between">
             <span class="text-sm font-medium text-1e3a8a">Remaining</span>
-            <span class="text-sm font-semibold <%= remainingBudget < 0 ? 'text-1e3a8a' : 'text-1e3a8a' %>">$<%= Math.abs(remainingBudget).toFixed(2) %> <%= remainingBudget < 0 ? '(Over)' : '' %></span>
+            <span class="text-sm font-semibold <%= remainingBudget < 0 ? 'text-1e3a8a' : 'text-1e3a8a' %>">₹<%= Math.abs(remainingBudget).toFixed(2) %> <%= remainingBudget < 0 ? '(Over)' : '' %></span>
           </div>
           <div class="progress-bar h-2">
             <div class="progress-bar-fill h-full" style="width: <%= Math.min(progress, 100) %>%; background-color: #1e3a8a;"></div>
@@ -215,8 +215,8 @@
               <input type="text" id="description" name="description" placeholder="e.g., Dinner at restaurant" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
             </div>
             <div>
-              <label for="amount" class="block text-sm font-medium text-1e3a8a">Amount ($)</label>
-              <input type="number" id="amount" name="amount" placeholder="e.g., 25.50" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+              <label for="amount" class="block text-sm font-medium text-1e3a8a">Amount (₹)</label>
+              <input type="number" id="amount" name="amount" placeholder="e.g., 2500.50" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
             </div>
             <div>
               <label for="category" class="block text-sm font-medium text-1e3a8a">Category</label>
@@ -249,7 +249,7 @@
                 <thead>
                   <tr class="bg-f5f5f0">
                     <th class="p-3 text-left text-sm font-medium text-1e3a8a">Description</th>
-                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Amount</th>
+                    <th class="p-3 text-left text-sm font-medium text-1e3a8a">Amount (₹)</th>
                     <th class="p-3 text-left text-sm font-medium text-1e3a8a">Category</th>
                     <th class="p-3 text-left text-sm font-medium text-1e3a8a">Date</th>
                     <th class="p-3 text-left text-sm font-medium text-1e3a8a">Action</th>
@@ -259,12 +259,13 @@
                   <% expenses.forEach(expense => { %>
                     <tr class="border-t hover:bg-f5f5f0 transition duration-200">
                       <td class="p-3 font-medium text-1e3a8a"><%= expense.description %></td>
-                      <td class="p-3">$<%= expense.amount.toFixed(2) %></td>
+                      <td class="p-3">₹<%= expense.amount.toFixed(2) %></td>
                       <td class="p-3"><%= expense.category %></td>
                       <td class="p-3"><%= expense.date.toDateString() %></td>
                       <td class="p-3">
-                        <form action="/expenses/delete/<%= expense._id %>" method="POST" style="display:inline;">
-                          <button type="submit" class="text-1e3a8a hover:text-172554 font-medium transition duration-200">Delete</button>
+                        <form action="/expenses/delete/<%= expense._id %>" method="POST" onsubmit="return confirmDelete();" style="display:inline;">
+                          <button type="submit" class="text-red-600 hover:text-red-800 font-medium transition duration-200">Delete</button>
+
                         </form>
                       </td>
                     </tr>
@@ -283,22 +284,22 @@
         <div class="bg-white shadow-lg rounded-xl p-6 max-w-2xl mx-auto card">
           <h3 class="text-lg font-semibold text-1e3a8a mb-4">Set Monthly Budget</h3>
           <% if (budget) { %>
-            <p class="text-sm text-1e3a8a mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">$<%= budget.amount.toFixed(2) %></span></p>
+            <p class="text-sm text-1e3a8a mb-4">Current Budget for <%= new Date().toLocaleString('default', { month: 'long', year: 'numeric' }) %>: <span class="font-semibold">₹<%= budget.amount.toFixed(2) %></span></p>
             <% const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0); %>
             <% if (totalExpenses > budget.amount) { %>
               <div class="bg-f5f5f0 border-l-4 border-1e3a8a text-1e3a8a p-4 mb-4 rounded-lg shadow-sm" role="alert">
-                <p class="text-sm">Warning: Your total expenses ($<%= totalExpenses.toFixed(2) %>) exceed your budget of $<%= budget.amount.toFixed(2) %>!</p>
+                <p class="text-sm">Warning: Your total expenses (₹<%= totalExpenses.toFixed(2) %>) exceed your budget of ₹<%= budget.amount.toFixed(2) %>!</p>
               </div>
             <% } else { %>
-              <p class="text-sm text-1e3a8a mb-4">Total expenses: $<%= totalExpenses.toFixed(2) %> / Budget: $<%= budget.amount.toFixed(2) %> (You're on track!)</p>
+              <p class="text-sm text-1e3a8a mb-4">Total expenses: ₹<%= totalExpenses.toFixed(2) %> / Budget: ₹<%= budget.amount.toFixed(2) %> (You're on track!)</p>
             <% } %>
           <% } else { %>
             <p class="text-sm text-1e3a8a mb-4">Set a monthly budget to enable tracking.</p>
           <% } %>
           <form action="/expenses/set-budget" method="POST" class="space-y-5">
             <div>
-              <label for="budgetAmount" class="block text-sm font-medium text-1e3a8a">Budget Amount ($)</label>
-              <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 500" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
+              <label for="budgetAmount" class="block text-sm font-medium text-1e3a8a">Budget Amount (₹)</label>
+              <input type="number" id="budgetAmount" name="budgetAmount" placeholder="e.g., 50000" step="0.01" class="mt-1 w-full p-3 border border-1e3a8a/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e3a8a transition duration-200" required>
             </div>
             <button type="submit" class="w-full btn-primary p-3 rounded-lg">Set Budget</button>
           </form>
@@ -374,7 +375,7 @@
           data: {
             labels: monthlyLabels,
             datasets: [{
-              label: 'Monthly Spend ($)',
+              label: 'Monthly Spend (₹)',
               data: monthlyValues,
               backgroundColor: 'rgba(30, 58, 138, 0.6)', /* Midnight Blue with opacity */
               borderColor: '#1e3a8a', /* Midnight Blue */
@@ -421,7 +422,7 @@
           data: {
             labels: trendLabels,
             datasets: [{
-              label: 'Monthly Spend ($)',
+              label: 'Monthly Spend (₹)',
               data: trendValues,
               fill: false,
               borderColor: '#1e3a8a', /* Midnight Blue */
@@ -505,6 +506,11 @@
   } else {
     alert('Speech Recognition API is not supported in this browser.');
     document.getElementById('voiceInputBtn').style.display = 'none';
+  }
+
+  // Confirmation for Delete
+  function confirmDelete() {
+    return confirm('Are you sure you want to delete this expense? This action cannot be undone.');
   }
 </script>
 </body>
