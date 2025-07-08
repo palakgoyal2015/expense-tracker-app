@@ -6,19 +6,26 @@
   <title>Expense Tracker</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> <!-- Add Chart.js -->
+  <style>
+    .navbar-gradient {
+      background: linear-gradient(180deg, #1e3a8a 0%, #2a4374 100%);
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
-  <nav class="bg-blue-600 p-4">
+  <nav class="navbar-gradient p-4">
     <div class="container mx-auto flex justify-between items-center">
       <a href="/" class="text-white text-lg font-bold">Expense Tracker</a>
       <div>
         <% if (typeof user !== 'undefined') { %>
-          <a href="/dashboard" class="text-white mr-4">Dashboard</a>
-          <a href="/logout" class="text-white">Logout</a> <!-- Added logout link -->
+          <a href="/dashboard" class="text-white mr-4 hover:text-gray-200 transition duration-200">Dashboard</a>
+          <a href="/logout" class="text-white hover:text-gray-200 transition duration-200">Logout</a> <!-- Added logout link -->
         <% } else { %>
-          <a href="/login" class="text-white mr-4">Login</a>
-          <a href="/signup" class="text-white">Signup</a>
+          <a href="/login" class="text-white mr-4 hover:text-gray-200 transition duration-200">Login</a>
+          <a href="/signup" class="text-white hover:text-gray-200 transition duration-200">Signup</a>
         <% } %>
       </div>
     </div>
   </nav>
+</body>
+</html>
