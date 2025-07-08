@@ -109,7 +109,7 @@
   <!-- Main Content -->
   <div class="flex-1 ml-0 md:ml-64 p-4 sm:p-6 lg:p-8 transition-all duration-300">
     <!-- Mobile Sidebar Toggle -->
-    <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 bg-1e3a8a text-white rounded-lg hover:bg-172554">
+    <button id="sidebar-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2" style="background-color: #1e3a8a; color: white; border-radius: 0.5rem;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
 
@@ -205,7 +205,7 @@
         <div class="bg-white shadow-lg rounded-xl p-6 max-w-4xl mx-auto" style="width: 1152px;" card>
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-semibold text-1e3a8a">Add New Expense</h3>
-            <button id="voiceInputBtn" class="p-1.5 bg-1e3a8a text-white rounded-full hover:bg-172554 transition duration-200" title="Voice Input">
+            <button id="voiceInputBtn" class="p-1.5" style="background-color: #0000FF; color: white; border-radius: 9999px;" title="Voice Input" onmouseover="this.style.backgroundColor='#0000CD'" onmouseout="this.style.backgroundColor='#0000FF'">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
             </button>
           </div>
@@ -265,7 +265,6 @@
                       <td class="p-3">
                         <form action="/expenses/delete/<%= expense._id %>" method="POST" onsubmit="return confirmDelete();" style="display:inline;">
                           <button type="submit" class="text-red-600 hover:text-red-800 font-medium transition duration-200">Delete</button>
-
                         </form>
                       </td>
                     </tr>
@@ -310,6 +309,7 @@
 </div>
 
 <!-- JavaScript for Sidebar, Section Navigation, Voice Input, and Summary -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   // Sidebar toggle for mobile
   const sidebar = document.getElementById('sidebar');
@@ -444,13 +444,18 @@
 
   // Voice Input Functionality
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const voiceInputBtn = document.getElementById('voiceInputBtn');
   if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = 'en-US';
 
-    document.getElementById('voiceInputBtn').addEventListener('click', () => {
+    voiceInputBtn.addEventListener('click', () => {
+      // Change to red on click
+      voiceInputBtn.style.backgroundColor = '#FF0000';
+
+      // Start recognition
       recognition.start();
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript.trim();
@@ -502,10 +507,15 @@
       recognition.onerror = (event) => {
         alert('Voice recognition error: ' + event.error);
       };
+
+      // Delay reverting to blue (20-30 seconds)
+      const delay = Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000; // Random between 20-30 seconds
+      setTimeout(() => {
+        voiceInputBtn.style.backgroundColor = '#0000FF';
+      }, delay);
     });
   } else {
-    alert('Speech Recognition API is not supported in this browser.');
-    document.getElementById('voiceInputBtn').style.display = 'none';
+    voiceInputBtn.style.display = 'none';
   }
 
   // Confirmation for Delete
